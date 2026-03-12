@@ -59,28 +59,19 @@ Each site uses its own subnet to support routing, Active Directory site mapping,
  │ 172.16.50.30 │
  └──────────────┘
 
----
-
 ## Design Goals
 
 The topology is intended to support:
 
-multi-site Active Directory
+- multi-site Active Directory
+- DNS resolution across sites
+- site-aware authentication
+- replication testing
+- future WAN simulation
+- future VPN experiments if required
 
-DNS resolution across sites
+## Notes
 
-site-aware authentication
-
-replication testing
-
-future WAN simulation
-
-future VPN experiments if required
-
-Notes
-
-each site must use its own subnet
-
-DNS must remain reliable before domain join and domain controller promotion
-
-subnet-to-site mapping will later be configured in Active Directory Sites and Services
+- each site must use its own subnet
+- DNS must remain reliable before domain join and domain controller promotion
+- subnet-to-site mapping will later be configured in Active Directory Sites and Services
