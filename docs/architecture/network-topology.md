@@ -58,7 +58,8 @@ Each site uses its own subnet to support routing, Active Directory site mapping,
  │   sbx-lx1    │
  │ 172.16.50.30 │
  └──────────────┘
- ---
+
+---
 
 ## Design Goals
 
