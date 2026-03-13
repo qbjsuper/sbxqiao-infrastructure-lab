@@ -31,8 +31,22 @@ This document records the current implementation state of the SBX site.
   - Linux member server
   - Samba file service
 
+### sbx-cl2
+
+- FQDN: `sbx-cl2.sbxqiao.lab`
+- IP: `TBD`
+- Roles:
+  - Windows client workstation
+  - Second-client validation endpoint
+  - Samba access verification client
+
 ---
 
 ## Current Status
 
-SBX is the active primary site and currently hosts the main domain controller and the Linux member infrastructure for Samba and authentication testing.
+SBX is the active primary site and currently hosts the main domain controller, the Linux member infrastructure for Samba and authentication testing, and the Windows client validation layer.
+
+`sbx-cl2` is planned as the second workstation in the SBX site for:
+- second-client Samba validation
+- cross-user access verification
+- later Group Policy and client-side testing
