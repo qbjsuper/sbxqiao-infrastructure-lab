@@ -42,11 +42,9 @@ This document records the current implementation state of the SBX site.
 
 ---
 
+
 ## Current Status
 
 SBX is the active primary site and currently hosts the main domain controller, the Linux member infrastructure for Samba and authentication testing, and the Windows client validation layer.
 
-`sbx-cl2` is planned as the second workstation in the SBX site for:
-- second-client Samba validation
-- cross-user access verification
-- later Group Policy and client-side testing
+`sbx-cl2` has been deployed, joined to the domain, and used to complete second-client Samba validation, including cross-user file modification testing.

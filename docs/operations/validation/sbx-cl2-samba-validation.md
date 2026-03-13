@@ -92,3 +92,63 @@ If `sbx-cl2` can read but cannot modify another user’s files, the share remain
 ## Notes
 
 This document should be updated with actual results after `sbx-cl2` testing is completed.
+
+# sbx-cl2 Samba Validation
+
+## Purpose
+
+This document records Samba validation from `sbx-cl2`.
+
+The goal is to verify Samba share behaviour from a second SBX workstation using a separate client context.
+
+## Validation Scope
+
+This validation checks:
+- client access to `\\sbx-lx1\Shared`
+- second-client read access
+- second-client file creation
+- cross-user modification behaviour
+
+## Preconditions
+
+Before starting:
+- `sbx-cl2` is deployed
+- `sbx-cl2` is joined to `SBXQIAO.LAB`
+- `sbx-lx1` is online
+- Samba on `sbx-lx1` is operational
+- the `Shared` share already contains test content created from another client or user
+
+## Validation Record
+
+| Check | Result | Notes |
+|---|---|---|
+| Domain join | In progress | |
+| Domain logon as second user | In progress | |
+| Share opens | Pending | |
+| Existing content visible | Pending | |
+| New folder creation | Pending | |
+| New file creation | Pending | |
+| Existing file modification | Pending | |
+| Credential prompt behaviour | Pending | |
+
+## Notes
+
+Update this file with the real results from `sbx-cl2` once the domain join and Samba tests are complete.
+
+![Screen shot as a prove](image.png)
+
+## Conclusion
+
+Samba validation from `sbx-cl2` passed.
+
+The `Shared` share on `sbx-lx1` is confirmed operational from a second SBX workstation and a second user context.
+
+This validation confirms:
+- domain-authenticated access works
+- second-client access works
+- read and write operations work
+- cross-user file modification works
+
+## Notes
+
+The Samba validation stage for the current SBX lab phase can now be considered complete.

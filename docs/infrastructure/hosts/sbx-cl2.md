@@ -5,10 +5,11 @@
 | Item | Value |
 |---|---|
 | Hostname | `sbx-cl2` |
+| FQDN | `sbx-cl2.sbxqiao.lab` |
 | Site | `SBX` |
 | Domain | `SBXQIAO.LAB` |
 | Host Type | Windows client workstation |
-| Build Status | Planned |
+| Status | Implemented |
 
 ## Operating System
 
@@ -23,20 +24,19 @@
 
 `sbx-cl2` is the second Windows client workstation for the SBX site.
 
-This host is intended to provide a clean domain-joined workstation for:
+Current intended functions:
 - second-client Samba validation
 - cross-user file access testing
-- Group Policy testing
+- Group Policy validation
 - client-side authentication testing
-- client DNS and name-resolution testing
-- later workstation administration practice
+- workstation administration practice
 
 ## Network Configuration
 
 | Item | Value |
 |---|---|
 | Network | `172.16.50.0/24` |
-| IP Assignment | DHCP or reserved address |
+| IP Address | `TBD` |
 | Default Gateway | `172.16.50.1` |
 | DNS Server | `172.16.50.10` |
 | Domain Controller | `sbx-dc1.sbxqiao.lab` |
@@ -45,43 +45,33 @@ This host is intended to provide a clean domain-joined workstation for:
 
 | Item | Value |
 |---|---|
-| Template Type | Windows client template |
-| Template State | Clean baseline before domain join |
-| Required Customisation | Rename to `sbx-cl2`, configure network, join `SBXQIAO.LAB` |
+| Template Type | Windows client template or clean installation |
+| Template State | Baseline system before domain join |
+| Required Customisation | hostname assignment, network configuration, domain join, validation testing |
 
 ## Deployment Purpose
 
-The immediate purpose of `sbx-cl2` is to validate Samba from a second SBX workstation using a separate client context.
+`sbx-cl2` exists to provide a clean second workstation in the SBX site.
 
-Primary objectives:
-- verify access to `\\sbx-lx1\Shared` from a second workstation
-- test a separate domain user logon session
-- confirm read access to existing shared content
-- confirm file and folder creation from a second client
-- confirm whether another authorised user can modify existing shared content
-
-Secondary future objectives:
-- Group Policy validation
-- mapped drive testing
-- client troubleshooting practice
-- standard user workflow simulation
-- later site and service validation tasks
+Its deployment purpose is to:
+- validate access to `\\sbx-lx1\Shared` from a second client
+- test a separate domain-user context
+- verify cross-user share behaviour
+- support later workstation and policy testing
 
 ## Validation Checks
 
-Planned validation for `sbx-cl2`:
-- hostname is `sbx-cl2`
-- client is on the `172.16.50.0/24` network
-- DNS points to `172.16.50.10`
-- domain join to `SBXQIAO.LAB` succeeds
+The following checks should be valid for `sbx-cl2`:
+- hostname resolves correctly
+- IP configuration is correct
+- DNS points to `sbx-dc1`
+- domain join succeeds
 - domain logon succeeds
 - domain controller discovery succeeds
-- `sbx-dc1` name resolution succeeds
-- `sbx-lx1` name resolution succeeds
+- `sbx-lx1` resolves correctly
 - `\\sbx-lx1\Shared` opens successfully
-- existing shared content is visible
 - second-client file creation succeeds
-- cross-user modification test is recorded
+- cross-user modification behaviour is recorded
 
 ## Notes
 

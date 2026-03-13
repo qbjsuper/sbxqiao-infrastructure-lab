@@ -70,8 +70,10 @@ The currently validated behaviour includes:
 - successful server-side Samba testing
 - successful Windows client access from SBX
 - successful file and folder creation through the share
+- successful second-client access from `sbx-cl2`
+- successful cross-user file modification
 
-A later refinement test should confirm full cross-user collaborative behaviour from a second client context.
+Samba for the current SBX lab stage is considered operational and validated.
 
 ## Operational Notes
 

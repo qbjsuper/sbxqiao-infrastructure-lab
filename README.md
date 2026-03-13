@@ -19,13 +19,17 @@ The environment is being developed as a multi-site lab.
 - Time synchronisation validation
 ---
 ## Current Infrastructure
+
 ### SBX Site
+
 - Subnet: `172.16.50.0/24`
 - Gateway: `172.16.50.1`
 - `sbx-dc1` — Domain Controller / DNS
 - `sbx-lx1` — Linux member server / Samba
+- `sbx-cl2` — Windows client workstation / Samba validation
 
 ### SBY Site
+
 - Subnet: `172.16.51.0/24`
 - Gateway: `172.16.51.1`
 - `sbx-dc2` — Planned additional Domain Controller / DNS
@@ -54,18 +58,14 @@ This repository is organised to support:
 
 This repository is the working source of truth for the SBXQIAO Infrastructure Lab.
 
-Documentation should be reviewed and updated **before and after** any meaningful infrastructure action.
+Documentation should be reviewed and updated before and after any meaningful infrastructure action.
 
 ### Before implementation
-Before deploying, modifying, or troubleshooting a host or service:
-
 - review the current relevant documentation
 - confirm the planned action matches the documented design
 - create missing planning, build, validation, or checkpoint records if required
 
 ### After implementation
-After completing the action:
-
 - update the relevant infrastructure record
 - update the relevant deployment or operations record
 - record the validation outcome
@@ -73,6 +73,6 @@ After completing the action:
 - create a checkpoint when the environment reaches a stable state
 
 ### Documentation standard
-The documentation must reflect the **real implemented environment**, not only the intended plan.
+The documentation must reflect the real implemented environment, not only the intended plan.
 
 Infrastructure work is not considered fully complete until the related documentation is updated.

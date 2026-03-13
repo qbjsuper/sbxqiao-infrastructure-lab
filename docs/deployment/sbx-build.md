@@ -1,89 +1,52 @@
-# SBX Build Record
+# SBX Site Record
 
-This document records the deployment sequence and current build state of the SBX site.
-
----
-
-## Purpose
-
-The SBX site is the primary implementation site for the current lab environment.
-
-This document exists to:
-- record the order of deployment for SBX infrastructure
-- show what has already been built
-- identify the next planned build step
-- provide a site-level deployment reference
+This document records the current implementation state of the SBX site.
 
 ---
 
-## Site Scope
+## Site Identity
 
 - Site Name: `SBX`
 - Subnet: `172.16.50.0/24`
 - Gateway: `172.16.50.1`
-- Domain: `SBXQIAO.LAB`
 
 ---
 
-## Build Phases
+## Implemented Hosts
 
-### Phase 1 — Core Directory Services
-Completed:
-- deployed `sbx-dc1`
-- configured Active Directory Domain Services
-- configured DNS
-- established the SBX domain foundation
+### sbx-dc1
 
-### Phase 2 — Linux Member Services
-Completed:
-- deployed `sbx-lx1`
-- joined the server to `SBXQIAO.LAB`
-- stabilised winbind-based AD integration
-- enabled SSH
-- configured Samba file sharing
-- validated authenticated access to the `Shared` share
+- FQDN: `sbx-dc1.sbxqiao.lab`
+- IP: `172.16.50.10`
+- Roles:
+  - Domain Controller
+  - DNS Server
+  - Global Catalog
 
-### Phase 3 — Second Client Validation
-Planned:
-- deploy `sbx-cl2`
-- join `sbx-cl2` to `SBXQIAO.LAB`
-- validate second-client access to `\\sbx-lx1\Shared`
-- verify cross-user Samba access behaviour
+### sbx-lx1
 
----
-
-## Current Build State
-
-### Implemented
-- `sbx-dc1`
-- `sbx-lx1`
-
-### Planned
-- `sbx-cl2`
-
----
-
-## Next Build Target
+- FQDN: `sbx-lx1.sbxqiao.lab`
+- IP: `172.16.50.30`
+- Roles:
+  - Linux member server
+  - Samba file service
 
 ### sbx-cl2
 
-`sbx-cl2` is planned as the second Windows client workstation in the SBX site.
-
-Its immediate purpose is to:
-- provide a clean second client for Samba validation
-- verify access from a separate workstation context
-- test cross-user file access behaviour
-
-Detailed host information should be recorded in:
-- `docs/infrastructure/hosts/sbx-cl2.md`
-
-Validation results should be recorded in:
-- `docs/operations/sbx-cl2-samba-validation.md`
+- FQDN: `sbx-cl2.sbxqiao.lab`
+- IP: `TBD`
+- Roles:
+  - Windows client workstation
+  - Second-client validation endpoint
+  - Samba access verification client
 
 ---
 
-## Notes
+## Current Status
 
-SBX remains the active primary site.
+SBX is the active primary site and currently hosts the main domain controller, the Linux member infrastructure for Samba and authentication testing, and the Windows client validation layer.
 
-The next logical build step is `sbx-cl2`, which will complete the second-client Samba validation stage before the lab focus moves further into documentation refinement and second-site planning.
+`sbx-cl2` is the second workstation in the SBX site for:
+- second-client Samba validation
+- cross-user access verification
+- later Group Policy and client-side testing

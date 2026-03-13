@@ -135,7 +135,7 @@ The current priority order is:
 
 1. keep `sbx-dc1` stable
 2. keep `sbx-lx1` stable
-3. deploy and validate `sbx-cl2`
+3. join and validate `sbx-cl2`
 4. complete SBX documentation
 5. move to confirmed SBY planning
 
