@@ -48,4 +48,31 @@ This repository is organised to support:
 - repeatable administration practice
 - clear separation between design, implementation, and operations
 
+---
 
+## Documentation Update Workflow
+
+This repository is the working source of truth for the SBXQIAO Infrastructure Lab.
+
+Documentation should be reviewed and updated **before and after** any meaningful infrastructure action.
+
+### Before implementation
+Before deploying, modifying, or troubleshooting a host or service:
+
+- review the current relevant documentation
+- confirm the planned action matches the documented design
+- create missing planning, build, validation, or checkpoint records if required
+
+### After implementation
+After completing the action:
+
+- update the relevant infrastructure record
+- update the relevant deployment or operations record
+- record the validation outcome
+- record any remaining issues or follow-up actions
+- create a checkpoint when the environment reaches a stable state
+
+### Documentation standard
+The documentation must reflect the **real implemented environment**, not only the intended plan.
+
+Infrastructure work is not considered fully complete until the related documentation is updated.
