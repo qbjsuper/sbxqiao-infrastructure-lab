@@ -1,0 +1,1 @@
+lab-action-quick-template.md

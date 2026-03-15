@@ -176,7 +176,30 @@ Documentation must be updated when:
 
 Documentation in this repository should allow a new administrator to understand and rebuild the environment with minimal external explanation.
 
+## Workflow Requirement
 
+All meaningful infrastructure actions must follow the lab action workflow standard defined in:
 
+- `docs/standards/lab-action-workflow.md`
 
+Required sequence:
+- design
+- prepare
+- implement
+- validate
+- document
+- checkpoint when stable
+
+Documentation is not optional after technical work.
+Documentation is part of the technical work.
+
+## Action Recording Standard
+
+Every meaningful infrastructure action must have a written action record.
+
+Approved templates:
+- `templates/lab-action-record-template.md`
+- `templates/lab-action-quick-template.md`
+
+The action record must exist before the work is considered fully complete.
 
