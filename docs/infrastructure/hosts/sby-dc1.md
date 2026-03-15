@@ -18,12 +18,18 @@
 - Preferred DNS before promotion: `172.16.50.10`
 - DNS suffix: `sbxqiao.lab`
 
+## Site Edge Dependency
+- Local site gateway provider: `pfSense-SBY`
+- Inter-site dependency: connectivity from SBY to SBX must be working before domain join and promotion
+- Existing directory services dependency: `sbx-dc1.sbxqiao.lab` must be reachable and resolvable before promotion
+
 ## Directory Services Target
 - Forest: `sbxqiao.lab`
 - Domain: `sbxqiao.lab`
 - Promotion type: additional domain controller in existing domain
 
 ## Build Intent
+
 `sby-dc1` will be deployed as the first SBY host and promoted into the existing domain to establish the secondary AD site.
 
 ## Validation Goals
@@ -37,6 +43,7 @@
 - `sby-dc1` is mapped to the correct site
 
 ## Pre-Promotion Checkpoint
+
 Create a VM checkpoint only after:
 - OS install is complete
 - hostname is set
@@ -44,6 +51,8 @@ Create a VM checkpoint only after:
 - updates are applied
 - connectivity to `sbx-dc1` is verified
 - local admin access is confirmed
+- inter-site routing path from SBY to SBX is verified
 
 ## Notes
+
 This host is part of the single-forest, single-domain, multi-site design for the lab.
