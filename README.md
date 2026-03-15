@@ -35,7 +35,7 @@ The environment is being developed as a multi-site lab.
 ### SBY Site
 - Subnet: `172.16.51.0/24`
 - Gateway: `172.16.51.1`
-- `sbx-dc2` — Planned additional Domain Controller / DNS
+- `sby-dc1` — Planned additional Domain Controller / DNS
 
 ## Repository Structure
 
