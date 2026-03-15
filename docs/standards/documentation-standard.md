@@ -120,8 +120,23 @@ Template documents define the baseline configuration for VM templates used in th
 Templates must remain clean baseline systems and must not contain production configuration.
 
 ---
+## Template Use Rule
+
+Templates exist only to help create recurring documentation types used in `docs/`.
+
+Approved template categories:
+- host records
+- site records
+- validation records
+- VM baseline templates where applicable
+
+Templates must not duplicate workflow standards or create a second documentation layer.
+
+If a template is not being used regularly, it should be removed.
 
 ## Operational Update Rule
+
+---
 
 Documentation must be updated when:
 
