@@ -56,3 +56,7 @@ Each build phase should follow this sequence:
 3. validate
 4. document
 5. checkpoint
+
+---
+
+## Implementation work should follow the lab workflow standard defined in `docs/standards/lab-action-workflow.md`.
