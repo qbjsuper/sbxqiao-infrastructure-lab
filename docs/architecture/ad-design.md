@@ -27,7 +27,7 @@ This keeps the directory model simple while still supporting enterprise-style op
 
 ### SBY Site
 
-- `sbx-dc2.sbxqiao.lab` *(planned)*
+- `sby-dc1.sbxqiao.lab` *(planned)*
 - Roles:
   - Domain Controller
   - DNS Server

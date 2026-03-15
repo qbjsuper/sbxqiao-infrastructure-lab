@@ -27,7 +27,7 @@ DNS is Active Directory integrated.
 
 ### Planned Additional DNS Server
 
-- `sbx-dc2.sbxqiao.lab`
+- `sby-dc1.sbxqiao.lab`
 - IP: `172.16.51.10`
 
 ---
@@ -45,7 +45,7 @@ Design principles:
 
 ## SBY Initial Deployment Sequence
 
-When building `sbx-dc2`:
+When building `sby-dc1`:
 
 1. configure static IP
 2. set preferred DNS to `172.16.50.10`

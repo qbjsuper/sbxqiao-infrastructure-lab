@@ -43,7 +43,7 @@ Secondary site.
 - Samba integration in progress and under validation
 - core site infrastructure for SBX operational
 ### Planned
-- deploy `sbx-dc2` in SBY
+- deploy `sby-dc1` in SBY
 - implement multi-site AD mapping
 - validate cross-site replication
 - expand documentation and validation standards

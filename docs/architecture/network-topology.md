@@ -30,7 +30,7 @@ Each site uses its own subnet to support routing, Active Directory site mapping,
 
 - Subnet: `172.16.51.0/24`
 - Gateway: `172.16.51.1`
-- Planned Domain Controller: `sbx-dc2.sbxqiao.lab`
+- Planned Domain Controller: `sby-dc1.sbxqiao.lab`
 
 ---
 
@@ -50,7 +50,7 @@ Each site uses its own subnet to support routing, Active Directory site mapping,
  └───────┬────────┘                 └────────┬───────┘
          │                                   │
  ┌───────▼──────┐                     ┌──────▼───────┐
- │   sbx-dc1    │                     │   sbx-dc2    │
+ │   sbx-dc1    │                     │   sby-dc1    │
  │ 172.16.50.10 │                     │ 172.16.51.10 │
  └──────────────┘                     └──────────────┘
          │

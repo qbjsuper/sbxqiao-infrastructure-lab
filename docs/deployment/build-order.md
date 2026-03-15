@@ -161,3 +161,23 @@ Detailed service records belong in:
 
 Operational testing and checkpoints belong in:
 - `docs/operations/`
+
+---
+
+## SBY Site Build Order
+
+1. Confirm SBY design records are current in the repo
+2. Define `sby-dc1` planned state
+3. Create the `SBY-DC1` VM
+4. Install the operating system
+5. Set hostname to `sby-dc1`
+6. Configure static IP, gateway, DNS, and suffix
+7. Apply updates and confirm stable local admin access
+8. Verify network connectivity to `sbx-dc1`
+9. Verify DNS resolution for the domain and `sbx-dc1`
+10. Confirm time is synchronised closely enough for Kerberos
+11. Join the server to `sbxqiao.lab`
+12. Promote `sby-dc1` to additional domain controller and DNS server
+13. Validate AD DS health, DNS health, and replication
+14. Validate site/subnet mapping
+15. Update documentation immediately after the build reaches a stable state

@@ -1,40 +1,27 @@
-# SBY Site Record
+# SBY Site
 
-This document defines the planned implementation state of the SBY site.
+## Site Purpose
+SBY is the secondary Active Directory site in the `sbxqiao.lab` lab design.
 
----
-
-## Site Identity
-
-- Site Name: `SBY`
+## Site Network
+- Site name: `SBY`
 - Subnet: `172.16.51.0/24`
 - Gateway: `172.16.51.1`
 
----
+## Planned Infrastructure
+- `sby-dc1` — Additional Domain Controller / DNS
+
 ## Physical Host Placement
 - Site compute host: mini PC
 
-## Notes
-SBY workloads are intended to run on the mini PC in the homelab environment.
-This physical host placement is an implementation detail and does not change the logical site role of SBY within the `sbxqiao.lab` design.
+## Site Role in Lab
+SBY extends the lab from a single active site into a documented multi-site AD design. It is intended to host directory and name resolution services for the secondary subnet.
 
-### sbx-dc2
+## Design Expectations
+- The SBY subnet must be mapped to the `SBY` AD site
+- `sby-dc1` must be associated with the `SBY` site after promotion
+- Replication between SBX and SBY must validate cleanly
+- DNS must remain healthy across both domain controllers
 
-- FQDN: `sbx-dc2.sbxqiao.lab`
-- IP: `172.16.51.10`
-- Planned Roles:
-  - Domain Controller
-  - DNS Server
-  - Global Catalog
-
----
-
-## Deployment Intent
-
-SBY is the secondary site and is intended to support:
-
-- multi-site Active Directory
-- additional DNS service
-- replication validation
-- site-aware authentication testing
-- branch-style infrastructure design practice
+## Current State
+SBY is in build-preparation state. The first planned SBY infrastructure host is `sby-dc1`.
