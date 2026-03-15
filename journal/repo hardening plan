@@ -1,0 +1,309 @@
+# Repo Hardening Plan
+
+## Purpose
+
+This document tracks the next documentation hardening phase for the SBXQIAO Infrastructure Lab.
+
+The goal is to move the repository from a good structural baseline to a complete operational source of truth by:
+- completing host records
+- expanding validation evidence
+- improving deployment journaling
+- strengthening standards consistency
+- making future troubleshooting and handover easier
+
+---
+
+## Success Criteria
+
+This hardening phase is complete when:
+
+- every active host has a complete host record
+- every core service has a validation record
+- deployment records show what was done, not only the current state
+- standards documents are detailed enough to guide future changes
+- checkpoints exist for major stable milestones
+- documentation matches the real implemented environment
+
+---
+
+## Priority 1 — Complete Host Records
+
+### `docs/infrastructure/hosts/sbx-dc1.md`
+- [ ] confirm hostname, FQDN, and role summary
+- [ ] record OS edition and version
+- [ ] record Hyper-V generation, vCPU, RAM, disk, and switch attachment
+- [ ] record static IP, subnet mask, gateway, and DNS settings
+- [ ] record installed roles and features
+- [ ] record AD DS promotion state
+- [ ] record DNS role status
+- [ ] record GC status
+- [ ] record FSMO role status
+- [ ] record time source design
+- [ ] record backup or checkpoint reference
+- [ ] add validation commands and results
+- [ ] add known issues / notes
+- [ ] add last reviewed date
+
+### `docs/infrastructure/hosts/sbx-lx1.md`
+- [ ] confirm hostname, FQDN, and role summary
+- [ ] record Linux distribution and version
+- [ ] record VM generation, vCPU, RAM, disk, and switch attachment
+- [ ] record static IP, subnet mask, gateway, and DNS settings
+- [ ] record AD join state
+- [ ] record Kerberos / Winbind / Samba package set
+- [ ] record key config file locations
+- [ ] document Samba share names and purposes
+- [ ] document authentication method used
+- [ ] document permissions model used on shares
+- [ ] add validation commands and results
+- [ ] add known issues / notes
+- [ ] add last reviewed date
+
+### `docs/infrastructure/hosts/sbx-cl2.md`
+- [ ] confirm hostname, FQDN, and role summary
+- [ ] record OS edition and version
+- [ ] record IP configuration
+- [ ] record domain join status
+- [ ] record test purpose
+- [ ] record user accounts tested
+- [ ] record Samba validation role
+- [ ] add validation commands and results
+- [ ] add known issues / notes
+- [ ] add last reviewed date
+
+### `docs/infrastructure/hosts/sbx-dc2.md`
+- [ ] clearly mark status as planned
+- [ ] record intended site and subnet
+- [ ] record intended roles
+- [ ] record intended replication purpose
+- [ ] record deployment prerequisites
+- [ ] record dependency on site readiness
+- [ ] add target validation plan
+- [ ] add review date
+
+---
+
+## Priority 2 — Build Validation Evidence
+
+### `docs/operations/validation/ad-health.md`
+- [ ] record test scope
+- [ ] record date and reviewer
+- [ ] run and document `dcdiag`
+- [ ] run and document `repadmin /replsummary`
+- [ ] verify SYSVOL and NETLOGON
+- [ ] verify domain controller registration
+- [ ] summarise pass / fail
+- [ ] record remediation actions if needed
+
+### `docs/operations/validation/dns-health.md`
+- [ ] record DNS design expectation
+- [ ] verify forward lookup resolution
+- [ ] verify SRV record resolution
+- [ ] verify client DNS server settings
+- [ ] verify Linux DNS resolution
+- [ ] verify domain join related records
+- [ ] summarise pass / fail
+- [ ] record remediation actions if needed
+
+### `docs/operations/validation/time-sync.md`
+- [ ] record time hierarchy design
+- [ ] verify Windows time source on DC
+- [ ] verify domain member sync behaviour
+- [ ] verify Linux time sync behaviour
+- [ ] verify any pfSense-related dependency notes
+- [ ] explain Kerberos dependency on time accuracy
+- [ ] summarise pass / fail
+- [ ] record remediation actions if needed
+
+### `docs/operations/validation/linux-ad-integration.md`
+- [ ] verify DNS resolution from Linux
+- [ ] verify Kerberos works
+- [ ] verify domain identity lookup
+- [ ] verify user and group resolution
+- [ ] verify login behaviour
+- [ ] verify privilege / access behaviour
+- [ ] summarise pass / fail
+- [ ] record remediation actions if needed
+
+### `docs/operations/validation/samba-access.md`
+- [ ] define test matrix
+- [ ] test access from Linux locally
+- [ ] test access from Windows client
+- [ ] test expected allow / deny behaviour
+- [ ] test file create / modify / delete where appropriate
+- [ ] record screenshots or evidence if useful
+- [ ] summarise pass / fail
+- [ ] record remediation actions if needed
+
+---
+
+## Priority 3 — Strengthen Deployment Records
+
+### `docs/deployment/sbx-build.md`
+- [ ] add build objective
+- [ ] add prerequisites
+- [ ] add build order
+- [ ] add what has been completed
+- [ ] add what was validated
+- [ ] add current open issues
+- [ ] add rollback / checkpoint references
+- [ ] add next actions
+- [ ] add last reviewed date
+
+### `docs/deployment/build-order.md`
+- [ ] review against current real environment
+- [ ] confirm order still matches actual practice
+- [ ] mark completed phases
+- [ ] mark future phases
+- [ ] add dependency notes
+- [ ] add validation gate after each phase
+
+---
+
+## Priority 4 — Harden Architecture Documents
+
+### `docs/architecture/overview.md`
+- [ ] separate purpose, current state, and future state clearly
+- [ ] add quick environment summary
+- [ ] add current live hosts
+- [ ] add planned hosts
+- [ ] add quick links to deeper design docs
+- [ ] add review date
+
+### `docs/architecture/ad-design.md`
+- [ ] define forest and domain model
+- [ ] define site model
+- [ ] define DC placement rationale
+- [ ] define GC rationale
+- [ ] define OU strategy
+- [ ] define account tiering alignment
+- [ ] define future replication intent
+- [ ] define boundaries between current and planned state
+
+### `docs/architecture/network-topology.md`
+- [ ] define physical versus logical view
+- [ ] define Hyper-V switch model
+- [ ] define pfSense role
+- [ ] define subnet-to-site mapping
+- [ ] define client/server traffic expectations
+- [ ] define future inter-site routing expectations
+- [ ] add diagram references
+
+### `docs/architecture/dns-design.md`
+- [ ] define internal DNS authority
+- [ ] define client DNS usage rule
+- [ ] define SRV dependency for AD
+- [ ] define Linux member dependency on DNS
+- [ ] define future cross-site DNS considerations
+- [ ] define validation references
+
+### `docs/architecture/virtualization-design.md`
+- [ ] define Hyper-V host assumptions
+- [ ] define VM generation standard
+- [ ] define switch naming standard
+- [ ] define checkpoint policy
+- [ ] define resource allocation approach
+- [ ] define template usage approach
+
+---
+
+## Priority 5 — Expand Standards
+
+### `docs/standards/naming-convention.md`
+- [ ] define host naming
+- [ ] define site naming
+- [ ] define user naming
+- [ ] define admin tier account naming
+- [ ] define group naming
+- [ ] define OU naming
+- [ ] define GPO naming
+- [ ] define share naming
+- [ ] define service account naming
+- [ ] define template naming
+- [ ] define diagram and evidence naming
+
+### `docs/standards/ip-addressing.md`
+- [ ] verify current allocations are still accurate
+- [ ] add reserved ranges
+- [ ] add infrastructure addressing rules
+- [ ] add client addressing rules
+- [ ] add future SBY expansion notes
+- [ ] add DNS usage rule prominently
+- [ ] add review date
+
+### `docs/standards/admin-tiering.md`
+- [ ] define Tier 0 scope
+- [ ] define Tier 1 scope if used
+- [ ] define permitted logon locations
+- [ ] define prohibited logon locations
+- [ ] define group mapping
+- [ ] define workstation/server separation rule
+- [ ] define exceptions handling
+
+### `docs/standards/documentation-standard.md`
+- [ ] define required sections for host records
+- [ ] define required sections for validation docs
+- [ ] define required sections for deployment docs
+- [ ] define checkpoint format
+- [ ] define command output formatting rule
+- [ ] define screenshot / evidence rule
+- [ ] define date format rule
+- [ ] define review/update workflow
+
+---
+
+## Priority 6 — Improve Operational History
+
+### `docs/operations/checkpoints/`
+- [ ] create checkpoint for domain baseline
+- [ ] create checkpoint for Linux domain join
+- [ ] create checkpoint for Samba working state
+- [ ] create checkpoint for second client validation
+- [ ] create checkpoint for SBY design readiness
+
+Each checkpoint should include:
+- stable state reached
+- what changed
+- what was validated
+- known issues still open
+- next recommended action
+- checkpoint date
+
+---
+
+## Priority 7 — Optional Quality Improvements
+
+### Cross-linking
+- [ ] add links between host records and validation docs
+- [ ] add links between architecture docs and standards docs
+- [ ] add links from deployment docs to checkpoints
+
+### Diagrams
+- [ ] make sure each architecture area has a matching diagram reference
+- [ ] ensure diagram names match documentation names
+- [ ] mark diagrams as logical, physical, or planned
+
+### Templates
+- [ ] review templates for consistency with current documentation standard
+- [ ] update templates so new docs start with the right structure
+
+---
+
+## Immediate Next Actions
+
+- [ ] complete `sbx-dc1.md`
+- [ ] complete `sbx-lx1.md`
+- [ ] create `ad-health.md`
+- [ ] create `dns-health.md`
+- [ ] create `time-sync.md`
+- [ ] expand `sbx-build.md`
+- [ ] review `naming-convention.md`
+- [ ] create a checkpoint after the next stable validation pass
+
+---
+
+## Review Note
+
+This hardening plan must be updated as the environment changes.
+
+Documentation must describe the real implemented state, not only the intended design.
