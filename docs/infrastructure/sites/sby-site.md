@@ -1,40 +1,39 @@
-# SBY Site Record
+# SBY Site
 
-This document defines the planned implementation state of the SBY site.
+## Site Purpose
 
----
+SBY is the secondary Active Directory site in the `sbxqiao.lab` lab design.
 
-## Site Identity
-
-- Site Name: `SBY`
+## Site Network
+- Site name: `SBY`
 - Subnet: `172.16.51.0/24`
 - Gateway: `172.16.51.1`
+- Site edge firewall/router: `pfSense-SBY`
+- WAN transit IP: `192.168.0.253/24`
 
----
+## Planned Infrastructure
+- `sby-dc1` — Additional Domain Controller / DNS
+
 ## Physical Host Placement
 - Site compute host: mini PC
 
-## Notes
-SBY workloads are intended to run on the mini PC in the homelab environment.
-This physical host placement is an implementation detail and does not change the logical site role of SBY within the `sbxqiao.lab` design.
+## Site Role in Lab
 
-### sbx-dc2
+SBY extends the lab from a single active site into a documented multi-site AD design.
 
-- FQDN: `sbx-dc2.sbxqiao.lab`
-- IP: `172.16.51.10`
-- Planned Roles:
-  - Domain Controller
-  - DNS Server
-  - Global Catalog
+It is intended to host directory and name resolution services for the secondary subnet.
 
----
+SBY uses its own local pfSense instance as the site default gateway.
+Cross-site traffic from SBY is intended to pass through `pfSense-SBY` over the IPsec tunnel toward SBX.
 
-## Deployment Intent
+## Design Expectations
+- The SBY subnet must be mapped to the `SBY` AD site
+- `sby-dc1` must be associated with the `SBY` site after promotion
+- Replication between SBX and SBY must validate cleanly
+- DNS must remain healthy across both domain controllers
+- Inter-site IPsec connectivity to SBX must be working before domain join and promotion
 
-SBY is the secondary site and is intended to support:
+## Current State
 
-- multi-site Active Directory
-- additional DNS service
-- replication validation
-- site-aware authentication testing
-- branch-style infrastructure design practice
+SBY is in build-preparation state.
+The first planned SBY infrastructure host is `sby-dc1`.

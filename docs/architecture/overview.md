@@ -1,8 +1,13 @@
 # Architecture Overview
+
 This document provides a high-level summary of the SBXQIAO Infrastructure Lab.
+
 ---
+
 ## Purpose
+
 The lab is designed to simulate a small enterprise infrastructure environment for learning and practising real operational skills.
+
 Primary focus areas include:
 - Active Directory
 - DNS
@@ -12,44 +17,93 @@ Primary focus areas include:
 - Samba
 - multi-site design
 - validation and troubleshooting
+
 ---
+
 ## Current Architecture Model
+
 The environment currently uses:
 - one forest
 - one domain
 - multiple sites
-- pfSense as the routing and firewall platform
+- one pfSense firewall/router per site
+- a shared home-router underlay network for inter-host transport
+- site-to-site IPsec VPN between sites
 - Hyper-V as the virtualisation platform
+
 ---
+
 ## Domain Model
+
 - Forest: `sbxqiao.lab`
 - Domain: `sbxqiao.lab`
+
 This is a single-forest, single-domain design expanded through site separation rather than additional domains.
+
 ---
+
 ## Site Model
+
 ### SBX
 Primary site.
 - Subnet: `172.16.50.0/24`
 - Gateway: `172.16.50.1`
+- Site edge firewall/router: `pfSense-SBX`
+- WAN transit IP: `192.168.0.252/24`
+
 ### SBY
 Secondary site.
 - Subnet: `172.16.51.0/24`
 - Gateway: `172.16.51.1`
+- Site edge firewall/router: `pfSense-SBY`
+- WAN transit IP: `192.168.0.253/24`
+
 ---
+
+## Inter-Site Connectivity Model
+
+The two sites are hosted on separate physical systems.
+
+They are physically linked through the home-router Ethernet network `192.168.0.0/24`, which provides the underlay transport path between the site edge firewalls.
+
+Cross-site traffic is intended to pass through a site-to-site IPsec VPN between the two pfSense WAN interfaces.
+
+---
+
+## DNS Model
+
+pfSense provides routing and firewall functions.
+
+Active Directory DNS remains on the domain controllers.
+
+Before promotion, `sby-dc1` should use `172.16.50.10` as its preferred DNS server so that domain join and AD discovery depend on the existing domain controller.
+
+---
+
 ## Current Stage
+
 ### Implemented
 - `sbx-dc1` deployed as domain controller and DNS server
 - `sbx-lx1` deployed as Linux member server
-- Samba integration in progress and under validation
+- `sbx-cl2` deployed for second-client Samba validation
 - core site infrastructure for SBX operational
+
+### In Progress
+- define and document the inter-site IPsec design between SBX and SBY
+
 ### Planned
-- deploy `sbx-dc2` in SBY
+- establish working IPsec connectivity between SBX and SBY
+- deploy `sby-dc1` in SBY
 - implement multi-site AD mapping
 - validate cross-site replication
 - expand documentation and validation standards
+
 ---
+
 ## Design Intent
+
 The lab should be treated as an enterprise-style staged deployment, not just a collection of test VMs.
+
 Each build phase should follow this sequence:
 1. design
 2. deploy
@@ -59,4 +113,6 @@ Each build phase should follow this sequence:
 
 ---
 
-## Implementation work should follow the lab workflow standard defined in `docs/standards/lab-action-workflow.md`.
+## Implementation
+
+Implementation work should follow the lab workflow standard defined in `docs/standards/lab-action-workflow.md`.
