@@ -54,11 +54,14 @@ This repository is organised to support:
 
 ---
 
-## Documentation Update Workflow
+## Lab Operating Workflow
 
-This repository is the working source of truth for the SBXQIAO Infrastructure Lab.
+All meaningful lab actions follow this standard workflow:
 
-Documentation should be reviewed and updated before and after any meaningful infrastructure action.
+**Design → Prepare → Implement → Validate → Document → Checkpoint**
+
+See:
+- `docs/standards/lab-action-workflow.md`
 
 ### Before implementation
 - review the current relevant documentation
