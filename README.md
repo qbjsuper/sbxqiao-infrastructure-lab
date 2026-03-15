@@ -23,8 +23,6 @@ The environment is being developed as a multi-site lab.
 - Samba file services
 - Time synchronisation validation
 
----
-
 ## Current Infrastructure
 
 ### SBX Site
@@ -39,8 +37,6 @@ The environment is being developed as a multi-site lab.
 - Gateway: `172.16.51.1`
 - `sbx-dc2` — Planned additional Domain Controller / DNS
 
----
-
 ## Repository Structure
 
 - `docs/architecture/` — design documents
@@ -51,14 +47,12 @@ The environment is being developed as a multi-site lab.
 - `templates/` — VM templates and documentation templates
 - `journal/` — temporary working notes only
 
----
-
 ## Workflow
 
-All meaningful lab actions follow the lab workflow standard:
+All meaningful lab actions follow:
 
 - `docs/standards/lab-action-workflow.md`
 
-Documentation placement and formatting rules are defined in:
+Documentation placement and structure are defined in:
 
 - `docs/standards/documentation-standard.md`
