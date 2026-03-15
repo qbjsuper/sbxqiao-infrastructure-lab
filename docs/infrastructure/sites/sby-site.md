@@ -11,8 +11,12 @@ This document defines the planned implementation state of the SBY site.
 - Gateway: `172.16.51.1`
 
 ---
+## Physical Host Placement
+- Site compute host: mini PC
 
-## Planned Host
+## Notes
+SBY workloads are intended to run on the mini PC in the homelab environment.
+This physical host placement is an implementation detail and does not change the logical site role of SBY within the `sbxqiao.lab` design.
 
 ### sbx-dc2
 

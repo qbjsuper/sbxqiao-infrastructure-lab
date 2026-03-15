@@ -11,8 +11,12 @@ This document records the current implementation state of the SBX site.
 - Gateway: `172.16.50.1`
 
 ---
+## Physical Host Placement
+- Site compute host: big PC
 
-## Implemented Hosts
+## Notes
+SBX workloads currently run on the big PC in the homelab environment.
+This physical host placement is an implementation detail and does not change the logical site role of SBX within the `sbxqiao.lab` design.
 
 ### sbx-dc1
 
@@ -48,3 +52,4 @@ This document records the current implementation state of the SBX site.
 SBX is the active primary site and currently hosts the main domain controller, the Linux member infrastructure for Samba and authentication testing, and the Windows client validation layer.
 
 `sbx-cl2` has been deployed, joined to the domain, and used to complete second-client Samba validation, including cross-user file modification testing.
+

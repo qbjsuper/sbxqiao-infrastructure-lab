@@ -76,3 +76,13 @@ The topology is intended to support:
 - each site must use its own subnet
 - DNS must remain reliable before domain join and domain controller promotion
 - subnet-to-site mapping will later be configured in Active Directory Sites and Services
+
+## Physical Host Topology
+
+The current homelab physical hosting arrangement is:
+
+- SBX site workloads run on the big PC
+- SBY site workloads run on the mini PC
+
+This mapping describes where the site workloads are hosted physically.
+It is separate from the logical Active Directory site and subnet design.
