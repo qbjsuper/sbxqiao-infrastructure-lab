@@ -126,3 +126,97 @@ The final model is:
 - **Lab VMs:** domain-joined where required
 - **Hyper-V management:** centralised through one Hyper-V Manager console
 - **Cluster status:** not clustered
+
+## Workgroup Multi-Host Hyper-V Manager Access
+
+### Objective
+
+Manage both physical Hyper-V host PCs from a single Hyper-V Manager console while keeping the physical hosts outside the `sbxqiao.lab` domain.
+
+### Host model
+
+The physical Hyper-V hosts remain in a **workgroup** configuration.
+
+Current hosts:
+
+- `QIAO-AU` — primary Hyper-V host
+- `BOJIE_MS_A2` — secondary Hyper-V host
+
+This provides **centralised management only**. It does **not** provide:
+
+- failover clustering
+- live migration
+- shared storage
+- automatic high availability
+
+### Authentication design
+
+Because the physical hosts are not domain-joined, standard domain Kerberos-based remote management is not available.
+
+A dedicated local administrative account is used for remote Hyper-V management:
+
+- account name: `hvadmin`
+- account scope: local account on each physical Hyper-V host
+- password: same password on both host PCs
+
+On the remote Hyper-V host, the `hvadmin` account must be a member of:
+
+- `Administrators`
+- `Hyper-V Administrators`
+- `Remote Management Users`
+
+### Remote management prerequisites
+
+The following prerequisites were required on the remote Hyper-V host:
+
+- network reachability between both physical hosts
+- WinRM enabled
+- PowerShell remoting enabled
+- firewall rules allowing remote management traffic
+- local administrative rights
+- Hyper-V administrative rights
+
+### Working launch method
+
+Direct connection from a normal Hyper-V Manager session produced workgroup authentication and authorisation issues.
+
+The working method is to launch Hyper-V Manager from the primary host using `runas /netonly` with the remote host local administrative identity.
+
+Command used from `QIAO-AU`:
+
+```cmd
+runas /netonly /user:BOJIE_MS_A2\hvadmin "C:\Windows\System32\mmc.exe C:\Windows\System32\virtmgmt.msc"
+
+This starts Hyper-V Manager locally on QIAO-AU but uses the remote host account BOJIE_MS_A2\hvadmin for network authentication.
+
+Operational workflow
+
+Launch Hyper-V Manager with the runas /netonly command
+
+Connect to remote Hyper-V host BOJIE_MS_A2
+
+In the same console, connect to the local host QIAO-AU
+
+Use the left pane to switch between hosts:
+
+select BOJIE_MS_A2 to manage mini PC VMs
+
+select QIAO-AU to manage big PC VMs
+
+Result
+
+A single Hyper-V Manager console now manages both physical Hyper-V hosts:
+
+BOJIE_MS_A2
+
+QIAO-AU
+
+This meets the design goal of managing multiple Hyper-V hosts in one Hyper-V Manager while preserving the workgroup boundary on the physical hosts.
+
+Notes
+
+This is a management-plane solution, not a cluster design.
+
+Each host retains its own separate compute, storage, and VM inventory.
+
+VM visibility depends on which host is selected in the Hyper-V Manager left pane.
