@@ -87,4 +87,4 @@ Documentation placement and structure are defined in:
 # Optional short note for `README.md`
 
 ```
-- Hyper-V host management uses a workgroup-based multi-host Hyper-V Manager model, with remote access to `BOJIE_MS_A2` launched from `QIAO-AU` via `runas /netonly`.
+- Hyper-V host management uses a workgroup-based multi-host Hyper-V Manager model, with remote access to `BOJIE_MS_A2` launched from `QIAO-AU` via `runas /netonly`.This method is an operational workaround for workgroup-based Hyper-V host management and is intentionally used to preserve host isolation from the lab domain.
