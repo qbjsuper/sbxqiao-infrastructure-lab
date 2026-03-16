@@ -51,6 +51,8 @@ Each site uses its own pfSense firewall/router as the local default gateway.
 
 The two physical Hyper-V hosts are connected through the home-router Ethernet network on `192.168.0.0/24`.
 
+- Physical Hyper-V hosts remain in workgroup mode; only lab VMs join the `sbxqiao.lab` domain.
+
 That home-router network is the underlay transport path between the two site edge firewalls.
 Inter-site communication is carried through a site-to-site IPsec VPN between:
 - `pfSense-SBX` WAN `192.168.0.252/24`
