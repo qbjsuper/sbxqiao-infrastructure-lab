@@ -1,12 +1,17 @@
 # Architecture Overview
 
+
 This document provides a high-level summary of the SBXQIAO Infrastructure Lab.
+
 
 ---
 
+
 ## Purpose
 
+
 The lab is designed to simulate a small enterprise infrastructure environment for learning and practising real operational skills.
+
 
 Primary focus areas include:
 - Active Directory
@@ -18,9 +23,12 @@ Primary focus areas include:
 - multi-site design
 - validation and troubleshooting
 
+
 ---
 
+
 ## Current Architecture Model
+
 
 The environment currently uses:
 - one forest
@@ -31,18 +39,25 @@ The environment currently uses:
 - site-to-site IPsec VPN between sites
 - Hyper-V as the virtualisation platform
 
+
 ---
 
+
 ## Domain Model
+
 
 - Forest: `sbxqiao.lab`
 - Domain: `sbxqiao.lab`
 
+
 This is a single-forest, single-domain design expanded through site separation rather than additional domains.
+
 
 ---
 
+
 ## Site Model
+
 
 ### SBX
 Primary site.
@@ -82,6 +97,7 @@ Before promotion, `sby-dc1` should use `172.16.50.10` as its preferred DNS serve
 
 ## Current Stage
 
+
 ### Implemented
 - `sbx-dc1` deployed as domain controller and DNS server
 - `sbx-lx1` deployed as Linux member server
@@ -98,11 +114,15 @@ Before promotion, `sby-dc1` should use `172.16.50.10` as its preferred DNS serve
 - validate cross-site replication
 - expand documentation and validation standards
 
+
 ---
+
 
 ## Design Intent
 
+
 The lab should be treated as an enterprise-style staged deployment, not just a collection of test VMs.
+
 
 Each build phase should follow this sequence:
 1. design
@@ -114,5 +134,7 @@ Each build phase should follow this sequence:
 ---
 
 ## Implementation
+## Implementation
 
+Implementation work should follow the lab workflow standard defined in `docs/standards/lab-action-workflow.md`.
 Implementation work should follow the lab workflow standard defined in `docs/standards/lab-action-workflow.md`.

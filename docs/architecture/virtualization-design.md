@@ -31,7 +31,7 @@ The lab uses prebuilt VM templates as the baseline for new systems.
 Used for:
 
 - `sbx-dc1`
-- `sbx-dc2`
+- `sby-dc1`
 - future Windows infrastructure servers
 
 ### Ubuntu Server Template

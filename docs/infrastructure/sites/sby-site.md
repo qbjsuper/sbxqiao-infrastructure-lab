@@ -1,9 +1,14 @@
 # SBY Site
+# SBY Site
 
+## Site Purpose
 ## Site Purpose
 
 SBY is the secondary Active Directory site in the `sbxqiao.lab` lab design.
+SBY is the secondary Active Directory site in the `sbxqiao.lab` lab design.
 
+## Site Network
+- Site name: `SBY`
 ## Site Network
 - Site name: `SBY`
 - Subnet: `172.16.51.0/24`

@@ -71,7 +71,7 @@ This hardening phase is complete when:
 - [ ] add known issues / notes
 - [ ] add last reviewed date
 
-### `docs/infrastructure/hosts/sbx-dc2.md`
+### `docs/infrastructure/hosts/sby-dc1.md`
 - [ ] clearly mark status as planned
 - [ ] record intended site and subnet
 - [ ] record intended roles
