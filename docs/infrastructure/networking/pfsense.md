@@ -186,3 +186,28 @@ AD replication
 time synchronisation if required
 
 This hardening should be done only after the working baseline has been fully validated.
+
+### Internet access issue — SBY WAN upstream gateway missing
+
+During validation of `sby-dc1`, the server had a correct local IP configuration:
+
+- IP address assigned
+- subnet mask assigned
+- default gateway assigned
+- DNS server assigned
+
+However, internet access was not working.
+
+The root cause was not the server configuration itself. The issue was that `pfSense-SBY` WAN did not have a valid upstream gateway assigned.
+
+As a result:
+
+- local subnet communication could still work
+- inter-site traffic across the IPsec path could still work
+- but general internet-bound traffic could not be routed upstream from SBY
+
+After assigning the correct upstream gateway to the WAN interface on `pfSense-SBY`, internet connectivity was restored.
+
+### Technical lesson
+
+A host can have a correct local gateway configured and still fail to reach the internet if the edge router itself has no valid upstream default route.
