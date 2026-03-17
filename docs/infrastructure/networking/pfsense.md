@@ -2,152 +2,158 @@
 
 ## Purpose
 
-pfSense provides inter-site routing, firewall enforcement, and WAN/LAN edge services for the lab.
+pfSense provides routing, firewall enforcement, NAT, and inter-site VPN connectivity for the lab.
 
-In the current lab design, pfSense is used to:
+In this lab, pfSense is used to:
 
-- provide default gateway services for each site subnet
-- provide internet/NAT access where required
-- enforce firewall policy between networks
-- terminate the site-to-site IPsec tunnel between SBX and SBY
+- provide the default gateway for each site subnet
+- provide WAN egress and outbound NAT
+- enforce inter-network firewall policy
+- terminate the SBX↔SBY site-to-site IPsec tunnel
 
 ## Current deployment
 
-### SBX pfSense
+### pfSense-SBX
 
-- Hostname: `pfSense-SBX`
 - WAN: `192.168.0.252`
 - LAN: `172.16.50.1/24`
 - Protected subnet: `172.16.50.0/24`
 
-### SBY pfSense
+### pfSense-SBY
 
-- Hostname: `pfSense-SBY`
 - WAN: `192.168.0.253`
 - LAN: `172.16.51.1/24`
 - Protected subnet: `172.16.51.0/24`
 
-## Site-to-site IPsec
+## SBX↔SBY IPsec
 
 ### Purpose
 
-The SBX↔SBY IPsec tunnel provides routed connectivity between:
+The site-to-site IPsec tunnel connects:
 
 - `172.16.50.0/24` at SBX
 - `172.16.51.0/24` at SBY
 
-This tunnel is required so that:
+This is required for:
 
-- `sby-dc1` can reach `sbx-dc1`
-- inter-site DNS queries can work
-- domain join can be performed from SBY into the existing `sbxqiao.lab` domain
-- later AD replication traffic can pass between sites
+- inter-site DNS resolution
+- domain join from SBY into `sbxqiao.lab`
+- domain controller promotion at SBY
+- later AD replication between sites
 
-### Current Phase 2 intent
-
-The current protected networks are:
+### Current protected networks
 
 - SBX local network: `172.16.50.0/24`
 - SBY local network: `172.16.51.0/24`
 
-These selectors are intended to permit routed subnet-to-subnet communication across the tunnel.
+## Build log
 
-## Build note — 2026-03-17
+### 2026-03-17 — DNS over IPsec issue during SBY domain join preparation
 
-### Issue observed
+#### Symptom
 
-During preparation to join `sby-dc1` to the `sbxqiao.lab` domain, basic connectivity between the two sites was confirmed, but Active Directory DNS discovery did not fully work at first.
+From `sby-dc1`, basic IP connectivity to `sbx-dc1` worked, but Active Directory DNS discovery did not fully work at first.
 
-### Environment at time of issue
+Initial test results from `sby-dc1`:
 
-- Forest: `sbxqiao.lab`
-- Domain: `sbxqiao.lab`
-- `sbx-dc1`: `172.16.50.10`
-- `sby-dc1`: `172.16.51.10`
+- `ping 172.16.50.10` — success
+- `nslookup sbxqiao.lab 172.16.50.10` — success
+- `Test-NetConnection 172.16.50.10 -Port 53` — success
+- `nslookup -type=SRV _ldap._tcp.dc._msdcs.sbxqiao.lab 172.16.50.10` — timeout
 
-### Initial test results from `sby-dc1`
+#### Interpretation
 
-The following tests were performed against `sbx-dc1`:
+This confirmed that:
 
-ping 172.16.50.10
+- IP routing across the tunnel was working
+- at least some DNS traffic was reaching `sbx-dc1`
+- the tunnel was not fully down
+- the problem was a filtering/ruleset issue rather than a basic routing failure
 
-Result: success
+Because domain join depends on successful AD SRV lookups, the join was paused until DNS discovery worked correctly.
 
-nslookup sbxqiao.lab 172.16.50.10
+#### Corrective action
 
-Result: success
+Firewall policy was broadened for the inter-site path to allow `any` protocol during bring-up and validation.
 
-Test-NetConnection 172.16.50.10 -Port 53
+#### Result
 
-Result: success
+After broadening the rules, the following query succeeded from `sby-dc1`:
 
+```powershell
 nslookup -type=SRV _ldap._tcp.dc._msdcs.sbxqiao.lab 172.16.50.10
+The result correctly returned:
 
-Result: timeout
+sbx-dc1.sbxqiao.lab
 
-Interpretation
+172.16.50.10
 
-This showed that:
+Conclusion
 
-basic routed connectivity across IPsec was working
+The fault was a filtering/ruleset issue, not:
 
-at least some DNS traffic was reaching sbx-dc1
+a full IPsec tunnel failure
 
-the failure was not a complete tunnel outage
+a full DNS service outage on sbx-dc1
 
-the problem was more likely a firewall or ruleset scope issue than a routing issue
+a basic Layer 3 reachability problem
 
-Because domain join depends on successful AD SRV record discovery, the join was paused.
+Lesson learned
 
-Corrective action
-
-Firewall policy was broadened to allow any protocol for the current subnet-to-subnet inter-site path during bring-up.
-
-This broad permit approach was used temporarily to remove premature filtering while validating core AD functionality.
-
-Result after firewall change
-
-After broadening the firewall rules, the SRV lookup succeeded:
-
-nslookup -type=SRV _ldap._tcp.dc._msdcs.sbxqiao.lab 172.16.50.10
-
-Returned result:
-
-_ldap._tcp.dc._msdcs.sbxqiao.lab resolved successfully
-
-SRV target: sbx-dc1.sbxqiao.lab
-
-returned IP: 172.16.50.10
-
-Technical conclusion
-
-The issue was a filtering/ruleset problem, not:
-
-a complete IPsec tunnel failure
-
-a total DNS service failure on sbx-dc1
-
-a basic Layer 3 reachability failure
-
-This confirmed an important operating point for the lab:
-
-successful ICMP across a site-to-site tunnel does not prove that Active Directory traffic is fully permitted.
+Successful ICMP across a site-to-site tunnel does not prove that Active Directory traffic is fully permitted.
 
 Validation must include:
 
-basic IP reachability
+basic reachability
 
-standard DNS lookup
+normal DNS lookups
 
-AD SRV lookup
+AD SRV lookups
 
-relevant TCP port testing
+relevant service/port validation
 
-later replication validation
+2026-03-17 — SBY internet access issue traced to missing WAN upstream gateway
+Symptom
+
+sby-dc1 had:
+
+valid IP configuration
+
+correct default gateway
+
+working inter-site connectivity
+
+but no internet access
+
+Root cause
+
+pfSense-SBY WAN did not have a valid upstream gateway assigned.
+
+Effect
+
+This meant:
+
+local subnet communication could still work
+
+inter-site traffic across IPsec could still work
+
+but general internet-bound traffic could not be routed upstream
+
+Corrective action
+
+Assigned the correct upstream gateway to the WAN interface on pfSense-SBY.
+
+Result
+
+Internet access was restored for SBY-connected systems.
+
+Lesson learned
+
+A host can have a correct local gateway configured and still fail to reach the internet if the edge router itself has no valid upstream default route.
 
 Current operating approach
 
-During inter-site AD bring-up, firewall rules may remain broader than the final desired state so that:
+During inter-site AD bring-up, firewall policy may remain broader than the final desired state so that:
 
 DNS
 
@@ -155,59 +161,12 @@ AD locator traffic
 
 domain join traffic
 
+DC promotion traffic
+
 replication validation traffic
 
 can pass reliably.
 
-Rule tightening should only happen after:
-
-domain join succeeds
-
-DNS remains stable
-
-replication and AD health checks pass
-
 Future hardening task
 
-After the environment is stable, review and reduce the inter-site rule set to the minimum required ports and protocols for:
-
-DNS
-
-Kerberos
-
-LDAP/LDAPS
-
-SMB/RPC
-
-Global Catalog
-
-AD replication
-
-time synchronisation if required
-
-This hardening should be done only after the working baseline has been fully validated.
-
-### Internet access issue — SBY WAN upstream gateway missing
-
-During validation of `sby-dc1`, the server had a correct local IP configuration:
-
-- IP address assigned
-- subnet mask assigned
-- default gateway assigned
-- DNS server assigned
-
-However, internet access was not working.
-
-The root cause was not the server configuration itself. The issue was that `pfSense-SBY` WAN did not have a valid upstream gateway assigned.
-
-As a result:
-
-- local subnet communication could still work
-- inter-site traffic across the IPsec path could still work
-- but general internet-bound traffic could not be routed upstream from SBY
-
-After assigning the correct upstream gateway to the WAN interface on `pfSense-SBY`, internet connectivity was restored.
-
-### Technical lesson
-
-A host can have a correct local gateway configured and still fail to reach the internet if the edge router itself has no valid upstream default route.
+After the environment is fully stable, review and reduce the inter-site ruleset to the minimum required AD and management traffic set.

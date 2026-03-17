@@ -1,60 +1,139 @@
 # sby-dc1
 
+## Role
+
+`SBY-DC1` is the secondary site domain controller for site SBY in the `sbxqiao.lab` domain.
+
+Current roles:
+
+- Active Directory Domain Services
+- DNS Server
+- Global Catalog
+
 ## Identity
+
 - Hostname: `sby-dc1`
-- Hyper-V VM name: `SBY-DC1`
 - FQDN: `sby-dc1.sbxqiao.lab`
+- Domain: `sbxqiao.lab`
 - Site: `SBY`
 
-## Intended Role
-- Additional Domain Controller
-- DNS Server
-- Secondary site infrastructure host for `sbxqiao.lab`
+## Network configuration
 
-## Planned Network Configuration
 - Subnet: `172.16.51.0/24`
-- Planned IP: `172.16.51.10`
-- Gateway: `172.16.51.1`
-- Preferred DNS before promotion: `172.16.50.10`
-- DNS suffix: `sbxqiao.lab`
+- IP address: `172.16.51.10`
+- Default gateway: `172.16.51.1`
 
-## Site Edge Dependency
-- Local site gateway provider: `pfSense-SBY`
-- WAN transit IP: `192.168.0.253/24`
-- Underlay transport network: `192.168.0.0/24`
-- Inter-site dependency: IPsec connectivity from SBY to SBX must be working before domain join and promotion
-- Existing directory services dependency: `sbx-dc1.sbxqiao.lab` must be reachable and resolvable before promotion
+### Current DNS client settings
 
-## Directory Services Target
-- Forest: `sbxqiao.lab`
-- Domain: `sbxqiao.lab`
-- Promotion type: additional domain controller in existing domain
+- Preferred DNS: `172.16.51.10`
+- Alternate DNS: `172.16.50.10`
 
-## Build Intent
+This was changed after DC promotion so that the server uses its own local DNS service first and `sbx-dc1` as fallback.
 
-`sby-dc1` will be deployed as the first infrastructure host in the SBY site and promoted into the existing domain to establish the secondary Active Directory site.
+## Build history
 
-## Validation Goals
-- Host uses the planned static network configuration
-- Name resolution to `sbx-dc1.sbxqiao.lab` works
-- Domain join path is healthy
-- Promotion completes successfully
-- AD replication succeeds between `sbx-dc1` and `sby-dc1`
-- DNS zone data is present and healthy
-- SBY subnet is associated with site `SBY`
-- `sby-dc1` is mapped to the correct site
+### Stage 1 — Initial deployment
 
-## Pre-Promotion Checkpoint
+`sby-dc1` was built as a Windows Server member server in the SBY subnet.
 
-Create a VM checkpoint only after:
-- OS install is complete
-- Hostname is set
-- Static IP is configured
-- Updates are applied
-- Connectivity to `sbx-dc1` is verified
-- Local admin access is confirmed
-- Inter-site IPsec path from SBY to SBX is verified
+Initial intended purpose:
 
-## Notes
+- join existing domain `sbxqiao.lab`
+- later become an additional domain controller for site SBY
 
-This host is part of the single-forest, single-domain, multi-site design for the lab.
+### Stage 2 — Domain join preparation troubleshooting
+
+Before the join, testing showed:
+
+- inter-site ping to `sbx-dc1` worked
+- normal DNS lookup to `sbx-dc1` worked
+- AD SRV lookup initially failed across the tunnel
+
+The issue was traced to firewall/ruleset scope on the inter-site path. After broadening the rules, AD SRV lookup succeeded and domain join could proceed safely.
+
+### Stage 3 — Domain join completed
+
+`sby-dc1` was joined successfully to:
+
+- domain: `sbxqiao.lab`
+
+Post-join verification confirmed:
+
+- domain membership successful
+- DC discovery successful
+- domain authentication working
+
+### Stage 4 — AD site awareness confirmed
+
+After AD Sites and Services preparation, `sby-dc1` correctly identified its site as:
+
+- `SBY`
+
+This was verified using:
+
+```powershell
+nltest /dsgetsite
+
+### Stage 5 — Promoted as additional domain controller
+
+sby-dc1 was promoted as an additional writable domain controller in the existing domain sbxqiao.lab.
+
+Promotion result:
+
+AD DS running
+
+DNS running
+
+Global Catalog enabled
+
+site placement correct: SBY
+
+### Stage 6 — Post-promotion validation
+
+The following post-promotion checks succeeded:
+
+Get-Service NTDS, DNS
+
+Get-ADDomainController -Filter * | Select-Object HostName, Site, IsGlobalCatalog
+
+repadmin /replsummary
+
+repadmin /showrepl
+
+local DNS lookup using 127.0.0.1
+
+local AD SRV lookup using 127.0.0.1
+
+Replication from SBX-DC1 to SBY-DC1 was successful for:
+
+domain partition
+
+configuration partition
+
+schema partition
+
+DomainDnsZones
+
+ForestDnsZones
+
+Current state
+
+sby-dc1 is now a healthy second DC in the lab.
+
+Current confirmed state:
+
+writable DC
+
+DNS server
+
+Global Catalog
+
+site-aware for SBY
+
+replicating with SBX-DC1
+
+able to answer local AD DNS queries
+
+OU placement note
+
+Although a custom OU structure exists under SBX-T0, the DC should remain in the built-in Domain Controllers OU unless DC-specific GPO scope is deliberately redesigned.
