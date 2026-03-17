@@ -22,6 +22,7 @@ The environment is being developed as a multi-site lab.
 - Linux AD member integration
 - Samba file services
 - Time synchronisation validation
+- Site-to-site IPsec VPN
 
 ## Current Infrastructure
 
@@ -29,6 +30,7 @@ The environment is being developed as a multi-site lab.
 - Subnet: `172.16.50.0/24`
 - Gateway: `172.16.50.1`
 - Site edge firewall/router: `pfSense-SBX`
+- WAN transit IP: `192.168.0.252/24`
 - `sbx-dc1` — Domain Controller / DNS
 - `sbx-lx1` — Linux member server / Samba
 - `sbx-cl2` — Windows client workstation / Samba validation
@@ -37,6 +39,7 @@ The environment is being developed as a multi-site lab.
 - Subnet: `172.16.51.0/24`
 - Gateway: `172.16.51.1`
 - Site edge firewall/router: `pfSense-SBY`
+- WAN transit IP: `192.168.0.253/24`
 - `sby-dc1` — Planned additional Domain Controller / DNS
 
 ## Connectivity Model
@@ -46,9 +49,14 @@ Each site uses its own pfSense firewall/router as the local default gateway.
 - SBX local gateway: `172.16.50.1`
 - SBY local gateway: `172.16.51.1`
 
-The two physical hosts are connected through the homelab home-router Ethernet network, which provides the transport path between the sites.
+The two physical Hyper-V hosts are connected through the home-router Ethernet network on `192.168.0.0/24`.
 
-Inter-site communication is not provided by a single shared pfSense instance. Cross-site traffic must pass through the local site pfSense, across the transport network, and then through the remote site pfSense.
+- Physical Hyper-V hosts remain in workgroup mode; only lab VMs join the `sbxqiao.lab` domain.
+
+That home-router network is the underlay transport path between the two site edge firewalls.
+Inter-site communication is carried through a site-to-site IPsec VPN between:
+- `pfSense-SBX` WAN `192.168.0.252/24`
+- `pfSense-SBY` WAN `192.168.0.253/24`
 
 ## DNS Model
 
@@ -74,3 +82,9 @@ All meaningful lab actions follow:
 
 Documentation placement and structure are defined in:
 - `docs/standards/documentation-standard.md`
+
+
+# Optional short note for `README.md`
+
+```
+- Hyper-V host management uses a workgroup-based multi-host Hyper-V Manager model, with remote access to `BOJIE_MS_A2` launched from `QIAO-AU` via `runas /netonly`.This method is an operational workaround for workgroup-based Hyper-V host management and is intentionally used to preserve host isolation from the lab domain.

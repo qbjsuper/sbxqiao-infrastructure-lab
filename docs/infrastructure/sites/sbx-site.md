@@ -19,11 +19,12 @@ This document records the current implementation state of the SBX site.
 
 ## Notes
 
+
 SBX workloads currently run on the big PC in the homelab environment.
 This physical host placement is an implementation detail and does not change the logical site role of SBX within the `sbxqiao.lab` design.
 
 SBX uses its local pfSense instance as the site default gateway.
-Cross-site traffic from SBX must pass through `pfSense-SBX` and then across the inter-site transport path.
+Cross-site traffic from SBX is intended to pass through `pfSense-SBX` over the IPsec tunnel toward SBY.
 
 ### sbx-dc1
 - FQDN: `sbx-dc1.sbxqiao.lab`
