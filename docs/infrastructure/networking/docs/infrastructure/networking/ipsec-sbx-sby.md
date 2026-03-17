@@ -2,101 +2,64 @@
 
 ## Purpose
 
-This document defines the first-pass site-to-site IPsec design between the SBX and SBY lab sites.
+This document records the first-pass IPsec transport build between the SBX and SBY sites.
 
-The goal of this stage is to establish working routed connectivity between:
+The objective of this stage was to establish secure routed connectivity between:
 
 - `172.16.50.0/24` at SBX
 - `172.16.51.0/24` at SBY
 
-This stage is a **network transport build first**. It is not yet a full multi-site Active Directory service expansion.
+This stage was intentionally built as a **network transport first** milestone before expanding SBY into a fully configured AD site service node.
 
-## Current Design Context
+---
 
-### Physical host layer
+## Design Scope
 
-The physical Hyper-V hosts remain in **workgroup** and are not joined to `sbxqiao.lab`.
+### Site LANs protected by the tunnel
 
-Hosts:
+- **SBX LAN:** `172.16.50.0/24`
+- **SBY LAN:** `172.16.51.0/24`
 
-- `QIAO-AU` — primary Hyper-V host
-- `BOJIE_MS_A2` — secondary Hyper-V host
+### Underlay / WAN transport
 
-This separation is intentional. Only the lab virtual machines participate in the domain.
+- **Underlay network:** `192.168.0.0/24`
+- **Home router / gateway:** `192.168.0.1`
 
-### Site status before IPsec
+### WAN peer addresses
 
-#### SBX
+- **pfSense-SBX WAN:** `192.168.0.252`
+- **pfSense-SBY WAN:** `192.168.0.253`
 
-- LAN subnet: `172.16.50.0/24`
-- pfSense LAN IP: `172.16.50.1`
-- Domain controller: `sbx-dc1`
-- Current services on `sbx-dc1`:
-  - Active Directory Domain Services
-  - DNS
-  - DHCP
+---
 
-#### SBY
+## Implemented State
 
-- LAN subnet: `172.16.51.0/24`
-- pfSense LAN IP: `172.16.51.1`
-- Domain controller: `sby-dc1`
-- `sby-dc1` is deployed but not yet configured
-- `pfSense-SBY` is installed and basic WAN/LAN connectivity is being prepared
+### IPsec tunnel status
 
-## Underlay / WAN Transport
+The first-pass site-to-site tunnel is operational.
 
-### WAN addressing
+#### Phase 1
 
-The site-to-site IPsec tunnel runs over the home-router underlay network:
+- **Status:** Established
+- **Type:** IKEv2
+- **Authentication:** Mutual PSK
+- **SBX peer:** `192.168.0.252`
+- **SBY peer:** `192.168.0.253`
 
-- underlay network: `192.168.0.0/24`
-- home router / gateway: `192.168.0.1`
+#### Phase 2
 
-WAN IP assignments:
-
-- `pfSense-SBX` WAN: `192.168.0.252`
-- `pfSense-SBY` WAN: `192.168.0.253`
-
-### Underlay validation outcome
-
-The following was confirmed before IPsec configuration:
-
-- `192.168.0.252` can reach `192.168.0.1`
-- `192.168.0.253` can reach `192.168.0.1`
-- WAN mask, gateway, and Hyper-V external vSwitch attachment are correct
-- peer WAN-to-WAN ping initially failed because inbound ICMP was blocked on the WAN interface
-- temporary WAN ICMP allow rules were added to permit peer testing
-- after the rule change, `192.168.0.252` and `192.168.0.253` could ping each other
-
-This confirms the underlay path is working and IPsec build can proceed.
-
-## IPsec Design Scope
-
-### Protected networks
-
-The first-pass tunnel protects only the site LANs:
-
-- SBX local network: `172.16.50.0/24`
-- SBY remote network: `172.16.51.0/24`
+- **Status:** Installed
+- **SBX local network:** `172.16.50.0/24`
+- **SBY remote network:** `172.16.51.0/24`
 
 On the reverse side:
 
-- SBY local network: `172.16.51.0/24`
-- SBX remote network: `172.16.50.0/24`
+- **SBY local network:** `172.16.51.0/24`
+- **SBX remote network:** `172.16.50.0/24`
 
-### VPN model
+### Cryptographic baseline
 
-This implementation uses:
-
-- site-to-site IPsec
-- IKEv2
-- policy-based subnet-to-subnet tunnel
-- mutual pre-shared key authentication
-
-## Phase 1 Standard
-
-The following Phase 1 baseline is used on both sites.
+#### Phase 1 baseline
 
 - Key Exchange version: `IKEv2`
 - Internet Protocol: `IPv4`
@@ -106,135 +69,195 @@ The following Phase 1 baseline is used on both sites.
 - Encryption: `AES-256`
 - Hash: `SHA-256`
 - Diffie-Hellman group: `14`
-- NAT Traversal: automatic / default
-- Lifetime: pfSense default unless changed during future tuning
 
-### Phase 1 peer definitions
-
-#### SBX Phase 1
-
-- interface: `WAN`
-- local peer: `192.168.0.252`
-- remote gateway: `192.168.0.253`
-
-Suggested description:
-
-- `SBX-to-SBY-P1`
-
-#### SBY Phase 1
-
-- interface: `WAN`
-- local peer: `192.168.0.253`
-- remote gateway: `192.168.0.252`
-
-Suggested description:
-
-- `SBY-to-SBX-P1`
-
-## Phase 2 Standard
-
-The following Phase 2 baseline is used on both sites.
+#### Phase 2 baseline
 
 - Mode: `Tunnel IPv4`
 - Protocol: `ESP`
 - Encryption: `AES-256`
 - Hash: `SHA-256`
 - PFS group: `14`
-- Lifetime: pfSense default unless changed during future tuning
 
-### Phase 2 selectors
+---
 
-#### SBX Phase 2
+## Validation Outcome
 
-- local network: `172.16.50.0/24`
-- remote network: `172.16.51.0/24`
+### Successful validations
 
-Suggested description:
+The following validations were completed successfully:
 
-- `SBX-LAN-to-SBY-LAN`
+- WAN reachability from `192.168.0.252` to `192.168.0.1`
+- WAN reachability from `192.168.0.253` to `192.168.0.1`
+- WAN peer reachability between:
+  - `192.168.0.252`
+  - `192.168.0.253`
+- Phase 1 establishment between SBX and SBY
+- Phase 2 installation for:
+  - `172.16.50.0/24`
+  - `172.16.51.0/24`
+- ICMP traffic successfully passing through the IPsec tunnel after firewall rule correction
 
-#### SBY Phase 2
+### Current confirmed transport result
 
-- local network: `172.16.51.0/24`
-- remote network: `172.16.50.0/24`
+Secure routed transport is now working between:
 
-Suggested description:
+- `172.16.50.0/24`
+- `172.16.51.0/24`
 
-- `SBY-LAN-to-SBX-LAN`
+This confirms that the first-pass encrypted site-to-site path is available for later multi-site service validation.
 
-## Firewall Rule Model
+---
 
-### WAN rules
+## Troubleshooting Record
 
-Temporary WAN ICMP rules were used only to verify underlay peer reachability between the two pfSense WAN addresses.
+### 1. Initial WAN peer reachability failure
 
-These rules are testing aids and should not be treated as the long-term application traffic policy.
+#### Symptom
 
-For normal pfSense IPsec operation, the tunnel establishment traffic is handled by pfSense when IPsec is enabled and correctly configured.
+The two pfSense WAN addresses could both reach the home router at `192.168.0.1`, but could not ping each other.
 
-### IPsec rules
+- `192.168.0.252` → `192.168.0.1` worked
+- `192.168.0.253` → `192.168.0.1` worked
+- `192.168.0.252` ↔ `192.168.0.253` failed initially
 
-Traffic that passes through the established tunnel is controlled on:
+#### Verified non-issues
 
-- `Firewall > Rules > IPsec`
+The following were checked and confirmed correct:
 
-Initial testing rule set should be minimal.
+- WAN IP addressing
+- subnet mask
+- default gateway
+- Hyper-V external vSwitch attachment
 
-Recommended first test rule on both firewalls:
+#### Root cause
 
-- Action: `Pass`
-- Interface: `IPsec`
-- Address family: `IPv4`
-- Protocol: `ICMP`
-- Source: `any`
-- Destination: `any`
+The immediate cause was inbound ICMP being blocked on the WAN interfaces.
 
-Suggested description:
+#### Fix applied
 
-- `Allow ICMP over IPsec for testing`
+Temporary WAN ICMP allow rules were added on both pfSense firewalls for peer testing between:
 
-This permits first-pass validation without opening unnecessary application traffic.
+- `192.168.0.252`
+- `192.168.0.253`
 
-## Validation Plan
+#### Result
 
-### Stage 1 — tunnel establishment
+WAN peer-to-peer ping then succeeded, confirming that underlay transport was working.
 
-Confirm that:
+---
 
-- Phase 1 comes up
-- Phase 2 comes up
-- Security Associations appear in `Status > IPsec`
+### 2. IPsec status confusion during build
 
-### Stage 2 — gateway-to-gateway test
+#### Symptom
 
-Test:
+During the build process, the IPsec GUI behaviour appeared inconsistent, including moments where the entry looked disabled or the status page appeared misleading.
 
-- `172.16.50.1` to `172.16.51.1`
-- `172.16.51.1` to `172.16.50.1`
+#### Operational conclusion
 
-This verifies basic encrypted transport between both site firewalls.
+The live tunnel state must be verified from the actual IPsec status entries and Security Association state, not only from a banner message or a row toggle interpretation.
 
-### Stage 3 — inside host test
+#### Final confirmed state
 
-After gateway tests succeed, test site host connectivity, for example:
+The final operational state on both sides showed:
 
-- `sbx-dc1` to `sby-dc1`
+- Phase 1 established
+- Phase 2 installed
 
-At this stage, do not assume domain service functionality yet. This only verifies IP transport.
+This confirmed that the tunnel configuration itself was active.
+
+---
+
+### 3. Tunnel established but traffic initially failed
+
+#### Symptom
+
+Phase 1 and Phase 2 came up, but initial ping across the tunnel failed.
+
+#### Observed behaviour from counters
+
+The IPsec counters showed an asymmetric pattern:
+
+- SBY was sending traffic
+- SBX was receiving traffic
+- SBX was not sending matching return traffic
+
+#### Root cause
+
+The **IPsec firewall rule direction** was incorrect.
+
+This was the key troubleshooting finding.
+
+On pfSense, rules on the **IPsec** tab apply to traffic as it **enters from the remote side**.  
+That means the rule source must reference the **remote subnet**, not the local subnet.
+
+#### Incorrect logic initially used
+
+The earlier rule logic treated IPsec rules like local outbound policy, which reversed source and destination expectations.
+
+#### Corrected rule direction
+
+##### On SBX
+
+- **Source:** `172.16.51.0/24`
+- **Destination:** `172.16.50.0/24`
+
+##### On SBY
+
+- **Source:** `172.16.50.0/24`
+- **Destination:** `172.16.51.0/24`
+
+#### Result
+
+After correcting the IPsec rule direction, ping across the tunnel succeeded.
+
+This confirmed that:
+
+- the tunnel itself was healthy
+- the issue was traffic filtering logic, not Phase 1 or Phase 2 establishment
+
+---
 
 ## Operational Notes
 
-- This is the first-pass transport build only
-- `sby-dc1` is not yet considered a configured site service node
-- multi-site AD validation comes after stable IPsec transport
-- any broad WAN allow rules should be avoided
-- use narrow, explicit rules for testing and future service enablement
+- This is a **transport milestone**, not a full multi-site AD completion point
+- `sby-dc1` exists but is not yet treated as a fully configured site service node
+- WAN ICMP rules were temporary troubleshooting controls, not the long-term intended WAN policy
+- IPsec rules should remain narrow during early validation
+- additional application traffic should only be opened deliberately after service requirements are defined
 
-## Next Stage After Successful IPsec
+---
 
-After stable IPsec transport is verified, the next major tasks are expected to be:
+## Current State Summary
+
+### Established
+
+- working WAN underlay between both pfSense WAN peers
+- working site-to-site IPsec tunnel between SBX and SBY
+- protected subnet path between:
+  - `172.16.50.0/24`
+  - `172.16.51.0/24`
+- successful ICMP validation across the tunnel
+
+### Troubleshooted and resolved
+
+- WAN peer ping failure caused by WAN-side ICMP filtering
+- misleading or confusing GUI state during IPsec build
+- tunnel-up-but-no-traffic condition caused by reversed IPsec firewall rule direction
+
+### Not yet completed
+
+- `sby-dc1` configuration
+- cross-site DNS service validation
+- AD Sites and Services mapping
+- cross-site AD replication validation
+
+---
+
+## Next Stage
+
+The next planned stage after transport validation is:
 
 1. configure `sby-dc1`
-2. validate DNS reachability between sites
-3. define AD Sites and Services mapping
-4. validate replication path only after site service readiness is complete
+2. validate DNS reachability across the tunnel
+3. define site/subnet mapping in AD Sites and Services
+4. validate replication only after site services are ready
