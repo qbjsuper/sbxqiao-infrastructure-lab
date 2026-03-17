@@ -360,3 +360,19 @@ local DNS service at both sites
 working inter-site replication
 
 working IPsec connectivity between sites
+
+### AD site cleanup completed
+
+After validating that all active domain controllers and subnets were mapped to the intended sites, the legacy `Default-First-Site-Name` object was removed.
+
+Confirmed final site state:
+
+- `SBX`
+- `SBY`
+
+Confirmed subnet mappings:
+
+- `172.16.50.0/24` → `SBX`
+- `172.16.51.0/24` → `SBY`
+
+This left the environment with only the intended site objects and removed the default placeholder site from the forest configuration.
